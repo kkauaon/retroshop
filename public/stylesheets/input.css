@@ -1,0 +1,30 @@
+@import url('https://fonts.googleapis.com/css2?family=Bruno+Ace&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
+@import "tailwindcss";
+
+* {
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-optical-sizing: auto;
+}
+
+.underline-animate {
+    position: relative;
+}
+
+.underline-animate::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 2px;
+    width: 0%;
+    background-color: currentColor;
+    transition: width 0.4s ease;
+}
+
+.underline-animate:hover::after {
+    width: 100%;
+}
+
+.logo {
+    font-family: "Bruno Ace", sans-serif;
+}

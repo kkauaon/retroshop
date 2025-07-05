@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Retroshop</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel='stylesheet' type='text/css' media='screen' href='stylesheets/output.css'>
+    <script src="https://kit.fontawesome.com/3a670ef670.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div class="flex flex-col md:flex-row justify-center md:justify-between items-center p-5">
+        <h1 class="select-none logo font-medium text-2xl">retroshop</h1>
+        <ul class="flex flex-col md:flex-row md:space-x-10 md:items-center">
+            <%- include('header/header-item.ejs', { 
+                name: "Nintendo",
+                listings: [
+                    "Super Nintendo",
+                    "Nintendo DS",
+                    "Nintendo 3DS",
+                    "Nintendo Switch"
+                ]
+            }) %>
+
+            <%- include('header/header-item.ejs', { 
+                name: "PlayStation",
+                listings: [
+                    "PlayStation 1",
+                    "PlayStation 2",
+                    "PlayStation 3",
+                    "PlayStation 4",
+                    "PlayStation 5",
+                    "PSP",
+                    "PS Vita"
+                ]
+            }) %>
+
+            <%- include('header/header-item.ejs', { 
+                name: "Xbox",
+                listings: [
+                    "Xbox",
+                    "Xbox 360",
+                    "Xbox One",
+                    "Xbox Series S",
+                    "Xbox Series X"
+                ]
+            }) %>
+
+            <%- include('header/header-item.ejs', { 
+                name: "Sega",
+                listings: [
+                    "Master System",
+                    "Mega Drive",
+                    "Saturn",
+                    "Dreamcast"
+                ]
+            }) %>
+
+            <%- include('header/header-item.ejs', { 
+                name: "Clássicos",
+                listings: [
+                    "Atari",
+                    "Neo Geo",
+                    "Game Boy",
+                    "Arcades"
+                ]
+            }) %>
+
+
+            <a class="flex flex-row space-x-2 cursor-pointer items-center justify-center underline-animate rounded-lg py-1">
+                <p class="select-none">Meus Produtos</p>
+                <i class="fa-solid fa-store"></i>
+            </a>
+
+            <a class="flex flex-row space-x-2 cursor-pointer items-center justify-center border border-gray-800 rounded-lg px-3 py-1">
+                <p class="select-none">Acessar Conta</p>
+                <i class="fa-regular fa-user"></i>
+            </a>
+        </ul>
+    </div>
