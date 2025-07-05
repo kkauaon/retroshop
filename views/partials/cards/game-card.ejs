@@ -1,4 +1,4 @@
-<div class="overflow-hidden rounded-lg border border-gray-800 bg-white w-full md:w-[250px] flex flex-col space-y-2">
+<div class="overflow-hidden rounded-lg border border-gray-800 bg-white w-[40%] md:w-[250px] flex flex-col space-y-2">
     <div class="flex flex-col-reverse w-full">
         <!-- Capa do jogo -->
         <img class="w-full h-full object-cover z-0 aspect-[3/4]" src="<%= game.coverUrl %>" onerror="this.onerror=null;this.src='https://dummyimage.com/540x720/99a1af/fff.png&text=Imagem+n%C3%A3o+dispon%C3%ADvel';">
@@ -7,8 +7,34 @@
         <img class="w-full object-contain z-1 pointer-events-none select-none" src="/covers/<%= platform.slug %>.png" onerror="this.style.display='none'">
     </div>
 
-    <div class="flex flex-col px-5 space-y-2 pb-2">
+    <div class="flex flex-col px-2 justify-between h-full pb-2">
         <h3 class="text-center font-bold"><%= game.name %></h3>
+        <br>
+        <div class="space-y-2 flex flex-col">
+            <% if (game.mongo?.price) { %>
+                <div class="flex flex-col">
+                    <div class="flex flex-col-reverse md:flex-row justify-between items-center">
+                        <p class="font-semibold text-2xl">R$ <%= Math.floor(game.mongo.price) %><span class="text-sm">,<%= (game.mongo.price % 1).toFixed(2).substring(2) %></span></p>
+                        <div class="h-fit flex flex-row justify-center items-center bg-gray-200 px-2 py-1 rounded-full">
+                            <p class="text-gray-800 text-xs font-semibold">
+                                <%= game.mongo.condition %>
+                            </p>
+                        </div>
+                    </div>
+                    <% if (game.mongo.vendorCount > 1) { %>
+                        <em class="text-xs font-light text-center md:text-start">+<%= game.mongo.vendorCount %> opções disponíveis</em>
+                    <% } %>
+                </div>
+            <% } else { %>
+                <p class="text-lg">Indisponível</span></p>
+            <% } %>
+            
+            <button
+                class="px-2 py-2 bg-black text-white rounded-lg hover:bg-gray-900 transition cursor-pointer"
+            >
+                <%= game.price ? "Comprar" : "Ver detalhes" %>
+            </button>
+        </div>
     </div>
    
 </div>

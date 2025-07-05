@@ -3,7 +3,8 @@ var router = express.Router();
 
 const IGDB = require('../../database/igdb')
 
-const platforms = require('../../igdb.json')
+const platforms = require('../../igdb.json');
+const listingsDAO = require('../../database/listingsDAO');
 
 /*router.get('/games', (req, res) => {
     res.render('all-games')
@@ -18,7 +19,7 @@ router.get('/:consoleId/games/', async (req, res) => {
         games = [];
 
         if (req.query.q) {
-            games = await IGDB.searchGamesByPlatform(req.query.q, console.id)
+            games = await listingsDAO.searchGamesByPlatform(req.query.q, console.id)
         }
 
         res.render('games', { platform: console, games });

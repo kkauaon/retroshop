@@ -4,7 +4,10 @@ require('./database/igdb')
 const express = require('express')
 const path = require('path')
 const { MongoClient } = require('mongodb')
+const listingsDAO = require('./database/listingsDAO')
 const client = new MongoClient(process.env.URI)
+
+listingsDAO.setClient(client)
 
 const app = express()
 const PORT = process.env.PORT || 3000

@@ -26,6 +26,15 @@ class IGDB {
         }
     }
 
+
+    /**
+     * Searches for games by name and platform using the IGDB API.
+     *
+     * @param {string} query - The search query for the game name.
+     * @param {string} platform - The platform ID to filter games by.
+     * @returns {Promise<Array<{ id: number, name: string, cover: number, coverUrl: string }>>} 
+     *   A promise that resolves to an array of game objects, each containing the game ID, name, cover ID, and cover image URL.
+     */
     async searchGamesByPlatform(query, platform) {
         const gamesData = await apicalypse(this.requestOptions)
             .fields(["id", "name", "cover"])
@@ -33,7 +42,7 @@ class IGDB {
             .where([`platforms = (${platform})`, `version_parent = null`, `game_type = (0,10,11,8)`])
             .limit(500)
             .request('/games')
-            
+
         if (gamesData.data.length > 0) {
             const coversData = await apicalypse(this.requestOptions)
                 .fields(["id","image_id"])
@@ -45,6 +54,8 @@ class IGDB {
                 const coverData = coversData.data[i];
 
                 const index = gamesData.data.findIndex((z) => z.cover == coverData.id)
+
+                //gamesData.data[index].price = 124.59
 
                 if (index > -1) gamesData.data[index].coverUrl = `https://images.igdb.com/igdb/image/upload/t_720p/${coverData.image_id}.jpg`
             }
