@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "app.js",
   "scripts": {
-    "tailwind": "tailwindcss -i ./public/stylesheets/input.css -o ./public/stylesheets/output.css --watch"
+    "tailwind": "tailwindcss -i ./public/stylesheets/input.css -o ./public/stylesheets/output.css --watch",
+    "igdb": "node configure-igdb.js"
   },
   "keywords": [],
   "author": "Kauã Sousa",
@@ -11,9 +12,12 @@
   "description": "App de compra e venda de jogos e consoles",
   "dependencies": {
     "@tailwindcss/cli": "^4.1.11",
+    "apicalypse": "^1.0.5",
+    "axios": "^1.10.0",
     "dotenv": "^17.0.1",
     "ejs": "^3.1.10",
     "express": "^5.1.0",
+    "mongodb": "^6.17.0",
     "tailwindcss": "^4.1.11"
   }
 }

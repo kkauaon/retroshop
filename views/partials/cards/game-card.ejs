@@ -1,0 +1,14 @@
+<div class="overflow-hidden rounded-lg border border-gray-800 bg-white w-full md:w-[250px] flex flex-col space-y-2">
+    <div class="flex flex-col-reverse w-full">
+        <!-- Capa do jogo -->
+        <img class="w-full h-full object-cover z-0 aspect-[3/4]" src="<%= game.coverUrl %>" onerror="this.onerror=null;this.src='https://dummyimage.com/540x720/99a1af/fff.png&text=Imagem+n%C3%A3o+dispon%C3%ADvel';">
+
+        <!-- Moldura da plataforma (como PS4, Xbox, etc.) -->
+        <img class="w-full object-contain z-1 pointer-events-none select-none" src="/covers/<%= platform.slug %>.png" onerror="this.style.display='none'">
+    </div>
+
+    <div class="flex flex-col px-5 space-y-2 pb-2">
+        <h3 class="text-center font-bold"><%= game.name %></h3>
+    </div>
+   
+</div>
