@@ -25,7 +25,7 @@
                         </div>
                     </div>
                     <% if (game.mongo.vendorCount > 1) { %>
-                        <em class="text-xs font-light text-center md:text-start">+<%= game.mongo.vendorCount %> opções disponíveis</em>
+                        <em class="text-xs font-light text-center md:text-start">+<%= game.mongo.vendorCount-1 %> opções disponíveis</em>
                     <% } %>
                 </div>
             <% } else { %>
