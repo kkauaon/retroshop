@@ -1,0 +1,33 @@
+<li class="group relative inline-block">
+    <a class="cursor-pointer flex flex-row space-x-2 items-center justify-center py-1 underline-animate">
+        <p class="select-none"><%= name %></p>
+        <i class="fa-solid fa-chevron-down"></i>
+    </a>
+
+    <!-- Dropdown -->
+    <div class="overflow-x-visible absolute <%= last == true ? "right-0" : "left-0" %> w-[200px] opacity-0 invisible group-hover:visible group-hover:opacity-100 transition-opacity duration-200 z-10">
+        <ul class="bg-white border border-gray-800 rounded shadow-lg mt-1">
+            <% listings.forEach(l => { %>
+                <li class="group/item relative px-4 py-2 hover:bg-gray-100 rounded cursor-pointer flex <%= last == true ? "flex-row-reverse justify-end space-x-3" : "flex-row justify-between" %> items-center">
+                    <%= l.name %>
+                    <i class="fa-solid <%= last == true ? "fa-chevron-left" : "fa-chevron-right" %>"></i>
+
+                    <!-- Sub-dropdown -->
+                    <div class="absolute top-0 <%= last == true ? "right-full" : "left-full" %> w-[200px] opacity-0 invisible group-hover/item:visible group-hover/item:opacity-100 transition-opacity duration-200 z-20">
+                        <ul class="bg-white border <%= last == true ? "mr-1" : "ml-1" %> border-gray-800 rounded shadow-lg">
+                            <li>
+                                <a href="/" class="rounded block px-4 py-2 hover:bg-gray-100 cursor-pointer">Acessórios</a>
+                            </li>
+                            <!-- <li>
+                                <a href="/" class="rounded block px-4 py-2 hover:bg-gray-100 cursor-pointer">Console</a>
+                            </li> -->
+                            <li>
+                                <a href="/<%= l.id %>/games" class="rounded block px-4 py-2 hover:bg-gray-100 cursor-pointer">Jogos</a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+            <% }) %> 
+        </ul>
+    </div>
+</li>

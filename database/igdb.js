@@ -32,14 +32,14 @@ class IGDB {
      *
      * @param {string} query - The search query for the game name.
      * @param {string} platform - The platform ID to filter games by.
-     * @returns {Promise<Array<{ id: number, name: string, cover: number, coverUrl: string }>>} 
+     * @returns {Promise<Array<{ id: number, name: string, cover: number, coverUrl: string, total_rating_count?: string }>>} 
      *   A promise that resolves to an array of game objects, each containing the game ID, name, cover ID, and cover image URL.
      */
     async searchGamesByPlatform(query, platform) {
         const gamesData = await apicalypse(this.requestOptions)
-            .fields(["id", "name", "cover"])
+            .fields(["id", "name", "cover", "total_rating_count"])
             .search(query)
-            .where([`platforms = (${platform})`, `version_parent = null`, `game_type = (0,10,11,8)`])
+            .where([`platforms = (${platform})`, `game_type = (0,3,4,10,11,8)`, `(game_status = (0,4,5,8) | game_status = null)`])
             .limit(500)
             .request('/games')
 

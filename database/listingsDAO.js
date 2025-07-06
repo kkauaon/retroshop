@@ -27,10 +27,11 @@ class ListingsDAO {
             console.log(prices)
 
             for (let i = 0; i < gamesData.length; i++) {
+                if (!gamesData[i].total_rating_count) gamesData[i].total_rating_count = 0
                 gamesData[i].mongo = prices.find(z => z.gameId == gamesData[i].id)
             }
 
-            return gamesData
+            return gamesData.filter(z => !z.name.toLowerCase().includes("digital")).sort((a,b) => b.mongo - a.mongo).sort((a,b) => b.total_rating_count - a.total_rating_count)
         } catch (error) {
             throw error;
         }
