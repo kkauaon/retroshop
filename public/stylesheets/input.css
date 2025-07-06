@@ -28,3 +28,28 @@
 .logo {
     font-family: "Bruno Ace", sans-serif;
 }
+
+.underline-animate-click {
+    position: relative;
+}
+
+.underline-animate-click::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 2px;
+    width: 0%;
+    background-color: currentColor;
+    transition: width 0.4s ease;
+}
+
+.underline-animate-click:active::after {
+    width: 100%;
+}
+
+@media (width < 48rem /* 768px */) {
+    .game-card {
+        width: calc(((100% - 20px) / 2));
+    }
+}

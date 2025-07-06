@@ -1,0 +1,18 @@
+<li>
+    <details class="group">
+        <summary class="cursor-pointer flex justify-between items-center py-2 border-b border-gray-300">
+            <span class="flex items-center space-x-2">
+                <!-- <i class="fa-brands <\%= item.icon %>"></i> -->
+                <span><%= name %></span>
+            </span>
+            <i class="fa-solid fa-chevron-down group-open:rotate-180 transition-transform"></i>
+        </summary>
+        <ul class="ml-4 mt-2 space-y-1">
+            <% listings.forEach(l => { %>
+                <li>
+                    <a href="/<%= l.id %>/games" class="block underline-animate-click"><%= l.name %></a>
+                </li>
+            <% }) %>
+        </ul>
+    </details>
+</li>
