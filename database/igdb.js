@@ -63,6 +63,34 @@ class IGDB {
 
         return gamesData.data
     }
+
+    async getGameById(gameId) {
+        const gamesData = await apicalypse(this.requestOptions)
+            .fields(["id", "name", "cover", "total_rating_count"])
+            .where([`id = ${gameId}`])
+            .limit(1)
+            .request('/games')
+
+        if (gamesData.data.length > 0) {
+            const coversData = await apicalypse(this.requestOptions)
+                .fields(["id","image_id"])
+                .where(`id = (${gamesData.data.filter(z => z.cover).map(z => z.cover).join(',')})`)
+                .limit(1)
+                .request('/covers')
+
+            for (let i = 0; i < coversData.data.length; i++) {
+                const coverData = coversData.data[i];
+
+                const index = gamesData.data.findIndex((z) => z.cover == coverData.id)
+
+                //gamesData.data[index].price = 124.59
+
+                if (index > -1) gamesData.data[index].coverUrl = `https://images.igdb.com/igdb/image/upload/t_720p/${coverData.image_id}.jpg`
+            }
+        }
+
+        return gamesData.data[0]
+    }
 }
 
 module.exports = new IGDB()

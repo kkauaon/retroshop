@@ -9,6 +9,13 @@ const client = new MongoClient(process.env.URI)
 
 listingsDAO.setClient(client)
 
+listingsDAO.getRandomGame().then((dailyOffer) => {
+    listingsDAO.setOffer(dailyOffer)
+    console.log("Oferta do Momento setada com sucesso!")
+    console.log(listingsDAO.getOffer())
+})
+
+
 const app = express()
 const PORT = process.env.PORT || 3000
 

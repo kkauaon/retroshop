@@ -55,3 +55,7 @@
         width: calc(((100% - 20px) / 2));
     }
 }
+
+.header-hidden {
+    transform: translateY(-100%);
+}

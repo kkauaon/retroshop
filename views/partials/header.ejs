@@ -8,125 +8,48 @@
     <link rel='stylesheet' type='text/css' media='screen' href='/stylesheets/output.css'>
     <script src="https://kit.fontawesome.com/3a670ef670.js" crossorigin="anonymous"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="/scripts/header.js"></script>
 </head>
-<body>
-<div x-data="{ drawerOpen: false }" class="px-5 md:px-0 w-full flex flex-row justify-center items-center">
-    <div class="flex flex-col justify-center md:justify-between items-center py-5 w-full md:w-[65%]">
-        <div class="flex flex-row-reverse space-x-5 md:space-x-0 md:flex-row justify-end items-center md:justify-between w-full">
-            <a href="/"><h1 class="select-none logo font-medium text-2xl">retroshop</h1></a>
+<body x-data="{ drawerOpen: false }" class="min-h-screen flex flex-col">
+<div class="px-5 md:px-0 flex w-full justify-center items-center">
+    <header id="main-header" class="px-5 fixed top-0 left-0 w-full bg-white z-50 border-b border-gray-800 transition-transform duration-300 ease-in-out">
+        <div class="flex flex-col justify-center z-0 md:justify-between items-center py-4 w-full md:w-[65%] mx-auto">
+            <div class="flex flex-row-reverse space-x-5 md:space-x-0 md:flex-row justify-end items-center md:justify-between w-full">
+                <a href="/"><h1 class="select-none logo font-medium text-2xl">retroshop</h1></a>
 
-            <!-- Botão hambúrguer (mobile) -->
-            <button 
-                class="md:hidden text-xl"
-                @click="drawerOpen = true"
-            >
-                <i class="fa-solid fa-bars"></i>
-            </button>
-
-            <!-- Menu desktop principal -->
-            <ul class="hidden md:flex flex-row md:space-x-10 md:items-center">    
-                <a class="flex flex-row space-x-2 cursor-pointer items-center justify-center rounded-lg py-1">
-                    <!-- <p class="select-none">Meus Produtos</p> -->
-                    <i class="fa-solid fa-search"></i>
-                </a>
-                
-                <a class="flex flex-row space-x-2 cursor-pointer items-center justify-center underline-animate rounded-lg py-1">
-                    <p class="select-none">Meus Produtos</p>
-                    <i class="fa-solid fa-store"></i>
-                </a>
-    
-                <a class="flex flex-row space-x-2 cursor-pointer items-center justify-center border border-gray-800 rounded-lg px-3 py-1">
-                    <p class="select-none">Acessar Conta</p>
-                    <i class="fa-regular fa-user"></i>
-                </a>
-            </ul>
-        </div>
-
-        <!-- Menus de console (visível só no desktop) -->
-        <ul class="hidden md:flex md:justify-between md:items-center w-full">
-            <%- include('header/header-item.ejs', { 
-                name: "Nintendo",
-                listings: [
-                    { name: "Super Nintendo", id: "snes" },
-                    { name: "Nintendo DS", id: "nds" },
-                    { name: "Nintendo 3DS", id: "3ds" },
-                    { name: "Nintendo Switch", id: "switch" },
-                    { name: "Nintendo Wii", id: "wii" },
-                    { name: "Nintendo Wii U", id: "wiiu" }
-                ],
-                last: false
-            }) %>
-
-            <%- include('header/header-item.ejs', { 
-                name: "PlayStation",
-                listings: [
-                    { name: "PlayStation 1", id: "ps" },
-                    { name: "PlayStation 2", id: "ps2" },
-                    { name: "PlayStation 3", id: "ps3" },
-                    { name: "PlayStation 4", id: "ps4--1" },
-                    { name: "PSP", id: "psp" },
-                    { name: "PS Vita", id: "psvita" }
-                ],
-                last: false
-            }) %>
-
-            <%- include('header/header-item.ejs', { 
-                name: "Xbox",
-                listings: [
-                    { name: "Xbox", id: "xbox" },
-                    { name: "Xbox 360", id: "xbox360" },
-                    { name: "Xbox One", id: "xboxone" }
-                ],
-                last: false
-            }) %>
-
-            <%- include('header/header-item.ejs', { 
-                name: "Sega",
-                listings: [
-                    { name: "Master System", id: "sms" },
-                    { name: "Mega Drive", id: "genesis-slash-megadrive" },
-                    { name: "Saturn", id: "saturn" },
-                    { name: "Dreamcast", id: "dc" }
-                ],
-                last: false
-            }) %>
-
-            <%- include('header/header-item.ejs', { 
-                name: "Clássicos",
-                listings: [
-                    { name: "Atari 2600", id: "atari2600" },
-                    { name: "Game Boy Advance", id: "gba" },
-                    { name: "Game Boy Color", id: "gbc" },
-                    { name: "Game Boy", id: "gb" },
-                    { name: "Zeebo", id: "zeebo" }
-                ],
-                last: true
-            }) %>
-        </ul>
-
-        <!-- Drawer lateral (mobile) -->
-        <div 
-            x-cloak
-            class="fixed top-0 left-0 h-full w-[80%] max-w-sm bg-white border-r border-gray-800 z-50 transform transition-transform duration-300 md:hidden"
-            :class="drawerOpen ? 'translate-x-0' : '-translate-x-full'"
-        >
-            <!-- Cabeçalho -->
-            <div class="flex items-center justify-between p-4 border-b border-gray-800">
-                <h1 class="select-none logo font-medium text-2xl">retroshop</h1>
-                <button @click="drawerOpen = false">
-                    <i class="fa-solid fa-xmark text-xl"></i>
+                <!-- Botão hambúrguer (mobile) -->
+                <button 
+                    class="md:hidden text-xl"
+                    @click="drawerOpen = true"
+                >
+                    <i class="fa-solid fa-bars"></i>
                 </button>
+
+                <!-- Menu desktop principal -->
+                <ul class="hidden md:flex flex-row md:space-x-10 md:items-center">    
+                    <!-- <a class="flex flex-row space-x-2 cursor-pointer items-center justify-center rounded-lg py-1">
+                        <\!-- <p class="select-none">Meus Produtos</p> -\->
+                        <i class="fa-solid fa-search"></i>
+                    </a> -->
+                    
+                    <a class="flex flex-row space-x-2 cursor-pointer items-center justify-center underline-animate rounded-lg py-1">
+                        <p class="select-none">Meus Produtos</p>
+                        <i class="fa-solid fa-store"></i>
+                    </a>
+        
+                    <a class="flex flex-row space-x-2 cursor-pointer items-center justify-center border border-gray-800 rounded-lg px-3 py-1">
+                        <p class="select-none">Acessar Conta</p>
+                        <i class="fa-regular fa-user"></i>
+                    </a>
+                </ul>
             </div>
-
-            <!-- Conteúdo -->
-            <ul class="flex flex-col p-4 space-y-4">
-                <li><a href="/" class="flex items-center space-x-2"><i class="fa-solid fa-house"></i><span>Início</span></a></li>
-                <li><a href="/" class="flex items-center space-x-2"><i class="fa-solid fa-store"></i><span>Meus Produtos</span></a></li>
-                <li><a href="/" class="flex items-center space-x-2"><i class="fa-solid fa-user"></i><span>Acessar Conta</span></a></li>
-
-                <%- include('header/header-item-mobile.ejs', { 
+    
+            <!-- Menus de console (visível só no desktop) -->
+            <ul class="hidden md:flex md:justify-between md:items-center w-full">
+                <%- include('header/header-item.ejs', { 
                     name: "Nintendo",
                     listings: [
+                        { name: "Nintendinho", id: "nes" },
                         { name: "Super Nintendo", id: "snes" },
                         { name: "Nintendo DS", id: "nds" },
                         { name: "Nintendo 3DS", id: "3ds" },
@@ -134,9 +57,10 @@
                         { name: "Nintendo Wii", id: "wii" },
                         { name: "Nintendo Wii U", id: "wiiu" }
                     ],
+                    last: false
                 }) %>
 
-                <%- include('header/header-item-mobile.ejs', { 
+                <%- include('header/header-item.ejs', { 
                     name: "PlayStation",
                     listings: [
                         { name: "PlayStation 1", id: "ps" },
@@ -146,18 +70,20 @@
                         { name: "PSP", id: "psp" },
                         { name: "PS Vita", id: "psvita" }
                     ],
+                    last: false
                 }) %>
 
-                <%- include('header/header-item-mobile.ejs', { 
+                <%- include('header/header-item.ejs', { 
                     name: "Xbox",
                     listings: [
                         { name: "Xbox", id: "xbox" },
                         { name: "Xbox 360", id: "xbox360" },
                         { name: "Xbox One", id: "xboxone" }
                     ],
+                    last: false
                 }) %>
 
-                <%- include('header/header-item-mobile.ejs', { 
+                <%- include('header/header-item.ejs', { 
                     name: "Sega",
                     listings: [
                         { name: "Master System", id: "sms" },
@@ -165,9 +91,10 @@
                         { name: "Saturn", id: "saturn" },
                         { name: "Dreamcast", id: "dc" }
                     ],
+                    last: false
                 }) %>
 
-                <%- include('header/header-item-mobile.ejs', { 
+                <%- include('header/header-item.ejs', { 
                     name: "Clássicos",
                     listings: [
                         { name: "Atari 2600", id: "atari2600" },
@@ -176,8 +103,89 @@
                         { name: "Game Boy", id: "gb" },
                         { name: "Zeebo", id: "zeebo" }
                     ],
+                    last: true
                 }) %>
             </ul>
         </div>
+    </header>
+
+    <!-- Drawer lateral (mobile) -->
+    <div 
+        x-cloak
+        
+        class="fixed top-0 left-0 h-full w-[80%] max-w-sm bg-white border-r border-gray-800 z-50 transform transition-transform duration-300 md:hidden overflow-y-auto"
+        :class="drawerOpen ? 'translate-x-0' : '-translate-x-full'"
+    >
+        <!-- Cabeçalho -->
+        <div class="flex items-center justify-between p-4 border-b border-gray-800">
+            <h1 class="select-none logo font-medium text-2xl">retroshop</h1>
+            <button @click="drawerOpen = false">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+        </div>
+
+        <!-- Conteúdo -->
+        <ul class="flex flex-col p-4 space-y-4 overflow-y-scroll">
+            <li><a href="/" class="flex items-center space-x-2"><i class="fa-solid fa-house"></i><span>Início</span></a></li>
+            <li><a href="/" class="flex items-center space-x-2"><i class="fa-solid fa-store"></i><span>Meus Produtos</span></a></li>
+            <li><a href="/" class="flex items-center space-x-2"><i class="fa-solid fa-user"></i><span>Acessar Conta</span></a></li>
+
+            <%- include('header/header-item-mobile.ejs', { 
+                name: "Nintendo",
+                listings: [
+                    { name: "Nintendinho", id: "nes" },
+                    { name: "Super Nintendo", id: "snes" },
+                    { name: "Nintendo DS", id: "nds" },
+                    { name: "Nintendo 3DS", id: "3ds" },
+                    { name: "Nintendo Switch", id: "switch" },
+                    { name: "Nintendo Wii", id: "wii" },
+                    { name: "Nintendo Wii U", id: "wiiu" }
+                ],
+            }) %>
+
+            <%- include('header/header-item-mobile.ejs', { 
+                name: "PlayStation",
+                listings: [
+                    { name: "PlayStation 1", id: "ps" },
+                    { name: "PlayStation 2", id: "ps2" },
+                    { name: "PlayStation 3", id: "ps3" },
+                    { name: "PlayStation 4", id: "ps4--1" },
+                    { name: "PSP", id: "psp" },
+                    { name: "PS Vita", id: "psvita" }
+                ],
+            }) %>
+
+            <%- include('header/header-item-mobile.ejs', { 
+                name: "Xbox",
+                listings: [
+                    { name: "Xbox", id: "xbox" },
+                    { name: "Xbox 360", id: "xbox360" },
+                    { name: "Xbox One", id: "xboxone" }
+                ],
+            }) %>
+
+            <%- include('header/header-item-mobile.ejs', { 
+                name: "Sega",
+                listings: [
+                    { name: "Master System", id: "sms" },
+                    { name: "Mega Drive", id: "genesis-slash-megadrive" },
+                    { name: "Saturn", id: "saturn" },
+                    { name: "Dreamcast", id: "dc" }
+                ],
+            }) %>
+
+            <%- include('header/header-item-mobile.ejs', { 
+                name: "Clássicos",
+                listings: [
+                    { name: "Atari 2600", id: "atari2600" },
+                    { name: "Game Boy Advance", id: "gba" },
+                    { name: "Game Boy Color", id: "gbc" },
+                    { name: "Game Boy", id: "gb" },
+                    { name: "Zeebo", id: "zeebo" }
+                ],
+            }) %>
+        </ul>
     </div>
 </div>
+
+<div class="mt-[64px] md:mt-[99px]">

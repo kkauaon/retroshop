@@ -9,6 +9,7 @@
   "keywords": [],
   "author": "Kauã Sousa",
   "license": "ISC",
+  "type": "commonjs",
   "description": "App de compra e venda de jogos e consoles",
   "dependencies": {
     "@tailwindcss/cli": "^4.1.11",

@@ -10,6 +10,14 @@ class ListingsDAO {
         this.db = client.db("retroshop").collection("listings")
     }
 
+    setOffer(game) {
+        this.offer = game
+    }
+
+    getOffer() {
+        return this.offer
+    }
+
     /**
      * Searches for games by name and platform matching IGDB data with MongoDB data.
      *
@@ -105,6 +113,7 @@ class ListingsDAO {
                         price: "$lowestPriceDocument.price",
                         vendorName: "$lowestPriceDocument.vendorName",
                         condition: "$lowestPriceDocument.condition",
+                        platform: "$lowestPriceDocument.platform",
                         vendorCount: 1 // Include the newly calculated count
                     }
                 }
@@ -114,6 +123,32 @@ class ListingsDAO {
         } catch (error) {
             console.error("Error finding lowest prices for games:", error);
             throw error; // Re-throw the error for further handling
+        }
+    }
+
+    async getRandomGame() {
+        try {
+            const randomGames = await this.db.aggregate([
+                { $sample: { size: 1 } }
+            ])
+                .toArray();
+
+            if (randomGames.length > 0) {
+                const gameIgdb = await igdb.getGameById(randomGames[0].gameId);
+
+                const gameData = {
+                    ...gameIgdb,
+                    mongo: randomGames[0]
+                }
+
+
+
+                return gameData;
+            } else {
+                return null;
+            }
+        } catch (error) {
+            throw error;
         }
     }
 }
