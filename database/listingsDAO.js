@@ -126,6 +126,53 @@ class ListingsDAO {
         }
     }
 
+    async getTrendingGames() {
+        const pipeline = [
+            { $sort: { "gameId": 1, "price": 1 } },
+            {
+                $group: {
+                    _id: "$gameId",
+                    count: { $sum: 1 },
+                    cheapestListing: { $first: "$$ROOT" }
+                }
+            },
+            { $sort: { count: -1 } },
+            { $limit: 5 },
+            { $replaceRoot: { newRoot: "$cheapestListing" } }
+        ];
+
+        try {
+            const games = await this.db.aggregate(pipeline)
+                .toArray();
+
+           
+
+            const igdbGames = await igdb.getGamesByIds(games.map(z => z.gameId))
+
+            const parsedGames = []
+
+            for (let i = 0; i < games.length; i++) {
+                let correspondente = igdbGames.find(z => z.id == games[i].gameId);
+                
+                let struct = {
+                    ...correspondente
+                }
+
+                if (!struct.total_rating_count) struct.total_rating_count = 0
+                struct.mongo = games[i]
+
+                console.log(struct)
+
+                parsedGames.push(struct)
+            }
+
+            return parsedGames
+        } catch (error) {
+            console.error("Error finding trending games:", error);
+            throw error; // Re-throw the error for further handling
+        }
+    }
+
     async getRandomGame() {
         try {
             const randomGames = await this.db.aggregate([
@@ -141,7 +188,7 @@ class ListingsDAO {
                     mongo: randomGames[0]
                 }
 
-
+                if (!gameData.total_rating_count) gameData.total_rating_count = 0
 
                 return gameData;
             } else {

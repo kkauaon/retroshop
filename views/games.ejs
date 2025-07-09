@@ -23,7 +23,7 @@
 
         <div class="flex flex-wrap justify-center gap-5">
             <% games.forEach(game => { %>
-                <%- include('partials/cards/game-card.ejs', { game, applySizing: true }) %>
+                <%- include('partials/cards/game-card.ejs', { platform, game, applySizing: true }) %>
             <% }) %>
         </div>
     </div>

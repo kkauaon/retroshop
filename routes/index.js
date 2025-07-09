@@ -2,10 +2,14 @@ var express = require('express');
 const listingsDAO = require('../database/listingsDAO');
 var router = express.Router();
 
+router.use(require('./listings/games'))
+
 router.get('/', async (req, res) => {
     const game = listingsDAO.getOffer();
+
+    const trending = await listingsDAO.getTrendingGames();
     
-    res.render('index', { offer: game });
+    res.render('index', { offer: game, trending });
 });
 
 module.exports = router;

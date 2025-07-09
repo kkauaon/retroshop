@@ -8,6 +8,13 @@
     font-optical-sizing: auto;
 }
 
+#daily-offer {
+  background-image: url('/images/promo-banner-full.webp');
+  background-size: cover; /* Faz a imagem cobrir a área sem distorcer */
+  background-position: center; /* Centraliza a imagem */
+  background-repeat: no-repeat;
+}
+
 .underline-animate {
     position: relative;
 }
