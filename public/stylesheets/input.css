@@ -61,6 +61,10 @@
     .game-card {
         width: calc(((100% - 20px) / 2));
     }
+
+    .trending-games .game-card:nth-last-child(1) {
+        display: none;
+    }
 }
 
 .header-hidden {
