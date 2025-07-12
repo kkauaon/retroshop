@@ -1,0 +1,62 @@
+<%- include('partials/header.ejs') %>
+
+<div class="p-5 md:px-0 w-full flex flex-row justify-center">
+    <div class="w-full md:w-[65%] flex flex-col space-y-5">
+        <div class="flex flex-col md:flex-row gap-5 md:items-start">
+            <img class="border-black border rounded-lg w-full md:w-[35%] object-fill object-top z-0 aspect-[3/4]" src="<%= game.coverUrl %>" onerror="this.onerror=null;this.src='https://dummyimage.com/540x720/99a1af/fff.png&text=Imagem+n%C3%A3o+dispon%C3%ADvel';">
+            <form class="flex flex-col border-black border rounded-lg p-5 w-full gap-5">
+                <h1 class="text-3xl font-bold"><%= game.name %></h1>
+
+                <% if (game.vendors.length <= 0) { %>
+                    <div class="flex flex-col justify-center items-center h-full w-full gap-10">
+                        <div class="flex flex-col items-center gap-2">
+                            <img width="100px" height="100px" src="/images/noCDs.png">
+                            <h3 class="text-xl font-bold text-center">Não há vendedores para este jogo ainda.</h3>
+                        </div>
+                        <div class="flex flex-col gap-2 w-full items-center">
+                            <h3 class="text-xl font-bold text-center">Seja o primeiro a anunciar!</h3>
+                            <button class="md:w-fit px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-900 transition cursor-pointer text-center">
+                                Criar Anúncio
+                            </button>
+                        </div>
+                    </div>
+                <% } else { %>
+                    <div class="flex flex-col gap-5">
+                        <% game.vendors.forEach((seller, idx) => { %>
+                            <label class="flex flex-row items-center border border-black rounded-lg p-3 cursor-pointer hover:bg-gray-50 transition" for="seller-<%= idx %>">
+                                <div class="flex flex-col flex-1 gap-1">
+                                    <p class="font-semibold"><%= seller.vendorName %></p>
+                                    <p class="font-semibold text-2xl">R$ <%= Math.floor(seller.price) %><span class="text-sm">,<%= (seller.price % 1).toFixed(2).substring(2) %></span></p>
+                                    <div class="flex flex-col md:flex-row gap-3">
+                                        <div class="w-fit h-fit flex flex-row justify-center items-center bg-gray-200 px-2 py-1 rounded-full">
+                                            <p class="text-gray-800 text-xs font-semibold">
+                                                <%= platforms.find(z => z.slug == seller.platform).name %>
+                                            </p>
+                                        </div>
+                                        <div class="w-fit h-fit flex flex-row justify-center items-center bg-gray-200 px-2 py-1 rounded-full">
+                                            <p class="text-gray-800 text-xs font-semibold">
+                                                Condição: <%= seller.condition %>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <input type="radio" required name="selectedSeller" id="seller-<%= idx %>" value="<%= seller._id %>" class="ml-4" />
+                            </label>
+                        <% }) %>
+
+                        <button type="submit" class="w-full px-2 py-2 bg-black text-white rounded-lg hover:bg-gray-900 transition cursor-pointer text-center">
+                            Comprar
+                        </button>
+
+                        <button type="button" class="w-full px-2 py-2 border border-black text-black rounded-lg hover:bg-gray-100 transition cursor-pointer text-center">
+                            Criar Anúncio
+                        </button>
+                    </div>
+                <% } %>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<%- include('partials/footer.ejs') %>

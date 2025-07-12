@@ -1,5 +1,6 @@
 const { Collection, MongoClient, ObjectId } = require("mongodb");
 const igdb = require("./igdb");
+const platforms = require('../igdb.json')
 
 class ListingsDAO {
     async setClient(client) {
@@ -28,9 +29,11 @@ class ListingsDAO {
      */
     async searchGamesByPlatform(query, platform) {
         try {
+            const platData = platforms.platforms.find(p => p.id == platform)
+
             const gamesData = await igdb.searchGamesByPlatform(query, platform)
 
-            const prices = await this.findLowestPricesForGames(gamesData.map(z => z.id))
+            const prices = await this.findLowestPricesForGames(gamesData.map(z => z.id), platData.slug)
 
             console.log(prices)
 
@@ -45,6 +48,49 @@ class ListingsDAO {
         }
     }
 
+    async mostRatedGamesByPlatform(platform) {
+        try {
+            const platData = platforms.platforms.find(p => p.id == platform)
+
+            const gamesData = await igdb.mostRatedGamesByPlatform(platform)
+
+            const prices = await this.findLowestPricesForGames(gamesData.map(z => z.id), platData.slug)
+
+            console.log(prices)
+
+            for (let i = 0; i < gamesData.length; i++) {
+                if (!gamesData[i].total_rating_count) gamesData[i].total_rating_count = 0
+                gamesData[i].mongo = prices.find(z => z.gameId == gamesData[i].id)
+            }
+
+            return gamesData.filter(z => !z.name.toLowerCase().includes("digital")).sort((a,b) => b.mongo - a.mongo).sort((a,b) => b.total_rating_count - a.total_rating_count)
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async getGameById(gameId) {
+        try {
+            const igdbInfo = await igdb.getGameById(gameId);
+
+            const results = await this.db.find({
+                gameId: parseInt(gameId)
+            })
+                .sort({ price: 1 })
+                .toArray();
+
+            let data = {
+                ...igdbInfo,
+                vendors: results
+            }
+
+            console.log(results)
+            return data;
+        } catch (error) {
+            throw error;
+        }
+    }
+
     /**
      * Finds a document by a specific gameId and returns the document
      * that has the lowest price among those matching the gameId.
@@ -53,10 +99,13 @@ class ListingsDAO {
      * @returns {Promise<{ _id: ObjectId, gameId: number, price: number, vendorName: string, condition: string }|null>} A promise that resolves to the document with the lowest price,
      * or null if no documents are found.
      */
-    async findLowestPriceForGame(gameId) {
+    async findLowestPriceForGame(gameId, platform) {
         try {
             const lowestPriceGame = await this.db.find({
-                gameId: gameId // Filter documents by the provided gameId
+                $and: [
+                    {gameId: gameId},
+                    {platform: platform}
+                ]
             })
                 .sort({ price: 1 })
                 .limit(1)
@@ -81,12 +130,17 @@ class ListingsDAO {
      * @returns {Promise<Array<{ _id: ObjectId, gameId: number, price: number, vendorName: string, vendorCount: number, condition: string }>|null>} A promise that resolves to the document with the lowest price,
      * or null if no documents are found.
      */
-    async findLowestPricesForGames(gameIds) {
+    async findLowestPricesForGames(gameIds, platform) {
         try {
+            console.log(platform)
+
             const lowestPrices = await this.db.aggregate([
                 {
                     $match: {
-                        gameId: { $in: gameIds } // Match documents where gameId is in the provided array
+                        $and: [
+                           {gameId: { $in: gameIds } }, 
+                           {platform: platform},
+                        ],
                     }
                 },
                 {

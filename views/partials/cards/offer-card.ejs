@@ -27,11 +27,12 @@
                 <p class="text-lg">Indisponível</span></p>
             <% } %>
             
-            <button
+            <a
+                href="/games/<%= game.id %>"
                 class="px-2 py-2 bg-black text-white rounded-lg hover:bg-gray-900 transition cursor-pointer"
             >
                 <%= game.price ? "Comprar" : "Ver detalhes" %>
-            </button>
+            </a>
         </div>
     </div>
    

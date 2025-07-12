@@ -16,24 +16,29 @@ router.get('/:consoleId/games/', async (req, res) => {
     const console = platforms.platforms.find(pl => pl.slug == consoleId)
 
     if (console) {
-        games = [];
+        let games = [];
+
+        let hasQuery = false;
 
         if (req.query.q) {
+            hasQuery = true;
             games = await listingsDAO.searchGamesByPlatform(req.query.q, console.id)
+        } else {
+            games = await listingsDAO.mostRatedGamesByPlatform(console.id)
         }
 
-        res.render('games', { platform: console, games });
+        res.render('games', { platform: console, games, hasQuery });
     } else { 
         res.render('404')
     }
 });
 
-router.get('/games/:gameId', (req, res) => {
+router.get('/games/:gameId', async (req, res) => {
     const { gameId } = req.params;
 
-    console.log(gameId)
+    const info = await listingsDAO.getGameById(gameId);
 
-    res.render('index');
+    res.render('game', {game: info, platforms: platforms.platforms});
 });
 
 module.exports = router;

@@ -64,6 +64,35 @@ class IGDB {
         return gamesData.data
     }
 
+    async mostRatedGamesByPlatform(platform) {
+        const gamesData = await apicalypse(this.requestOptions)
+            .fields(["id", "name", "cover", "total_rating_count"])
+            .where([`platforms = (${platform})`, `game_type = (0,3,4,10,11,8)`, `(game_status = (0,4,5,8) | game_status = null)`])
+            .sort('total_rating_count', 'desc')
+            .limit(20)
+            .request('/games')
+
+        if (gamesData.data.length > 0) {
+            const coversData = await apicalypse(this.requestOptions)
+                .fields(["id","image_id"])
+                .where(`id = (${gamesData.data.filter(z => z.cover).map(z => z.cover).join(',')})`)
+                .limit(500)
+                .request('/covers')
+
+            for (let i = 0; i < coversData.data.length; i++) {
+                const coverData = coversData.data[i];
+
+                const index = gamesData.data.findIndex((z) => z.cover == coverData.id)
+
+                //gamesData.data[index].price = 124.59
+
+                if (index > -1) gamesData.data[index].coverUrl = `https://images.igdb.com/igdb/image/upload/t_720p/${coverData.image_id}.jpg`
+            }
+        }
+
+        return gamesData.data
+    }
+
     async getGameById(gameId) {
         const gamesData = await apicalypse(this.requestOptions)
             .fields(["id", "name", "cover", "total_rating_count"])

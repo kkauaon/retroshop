@@ -30,6 +30,8 @@ function getIGDBAccessToken() {
 
         fs.writeFileSync('./igdb.json', JSON.stringify(base), { encoding: 'utf-8' })
 
+        fs.writeFileSync('./public/jsons/platforms.json', JSON.stringify(platforms.data), { encoding: 'utf-8' })
+
         console.log("Arquivo criado com sucesso contendo as novas credenciais.")
     })
 }

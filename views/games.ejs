@@ -19,8 +19,12 @@
             </button>
         </form>
 
-        <p class="text-gray-500 text-sm">Mostrando <%= games.length %> jogos do catálogo.</p>
-
+        <% if (hasQuery) { %>
+            <p class="text-gray-500 text-sm">Mostrando <%= games.length %> jogos do catálogo.</p>
+        <% } else { %>
+            <h3 class="text-xl font-semibold">Jogos mais avaliados ⭐</h3>
+        <% } %>
+        
         <div class="flex flex-wrap justify-center gap-5">
             <% games.forEach(game => { %>
                 <%- include('partials/cards/game-card.ejs', { platform, game, applySizing: true }) %>
