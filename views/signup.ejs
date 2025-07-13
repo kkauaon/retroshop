@@ -1,0 +1,40 @@
+<%- include('partials/header.ejs') %>
+
+<div class="p-5 md:px-0 w-full flex flex-row justify-center items-center h-[75vh]">
+    <div class="w-full md:w-[25%] flex flex-col space-y-5">
+        <div class="bg-white p-5 rounded-lg border border-black">
+            <h2 class="text-2xl font-bold mb-6 text-center">Cadastre-se para comprar e vender suas mídias físicas!</h2>
+            <form action="/signin" method="POST">
+                <div class="mb-4">
+                    <label class="block text-black text-sm font-bold mb-2" for="email">
+                        Nome
+                    </label>
+                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-black leading-tight focus:outline-none focus:shadow-outline" id="email" type="email" name="email" required>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-black text-sm font-bold mb-2" for="email">
+                        Email
+                    </label>
+                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-black leading-tight focus:outline-none focus:shadow-outline" id="email" type="email" name="email" required>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-black text-sm font-bold mb-2" for="password">
+                        Senha
+                    </label>
+                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-black mb-3 leading-tight focus:outline-none focus:shadow-outline" id="password" type="password" name="password" required>
+                </div>
+                <div class="flex flex-col md:flex-row items-center justify-between gap-3">
+                    <button type="submit" class="w-full md:w-fit px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-900 transition cursor-pointer text-center">
+                        Criar Conta
+                    </button>
+                    <a href="/signin" class="w-full md:w-fit px-4 py-2 border border-black text-black rounded-lg hover:bg-gray-100 transition cursor-pointer text-center">
+                        Já tenho conta
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<%- include('partials/footer.ejs') %>
