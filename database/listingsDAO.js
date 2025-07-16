@@ -35,8 +35,6 @@ class ListingsDAO {
 
             const prices = await this.findLowestPricesForGames(gamesData.map(z => z.id), platData.slug)
 
-            console.log(prices)
-
             for (let i = 0; i < gamesData.length; i++) {
                 if (!gamesData[i].total_rating_count) gamesData[i].total_rating_count = 0
                 gamesData[i].mongo = prices.find(z => z.gameId == gamesData[i].id)
@@ -55,8 +53,6 @@ class ListingsDAO {
             const gamesData = await igdb.mostRatedGamesByPlatform(platform)
 
             const prices = await this.findLowestPricesForGames(gamesData.map(z => z.id), platData.slug)
-
-            console.log(prices)
 
             for (let i = 0; i < gamesData.length; i++) {
                 if (!gamesData[i].total_rating_count) gamesData[i].total_rating_count = 0
@@ -84,7 +80,6 @@ class ListingsDAO {
                 vendors: results
             }
 
-            console.log(results)
             return data;
         } catch (error) {
             throw error;
@@ -132,8 +127,6 @@ class ListingsDAO {
      */
     async findLowestPricesForGames(gameIds, platform) {
         try {
-            console.log(platform)
-
             const lowestPrices = await this.db.aggregate([
                 {
                     $match: {
@@ -214,8 +207,6 @@ class ListingsDAO {
 
                 if (!struct.total_rating_count) struct.total_rating_count = 0
                 struct.mongo = games[i]
-
-                console.log(struct)
 
                 parsedGames.push(struct)
             }

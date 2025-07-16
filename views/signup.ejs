@@ -3,25 +3,30 @@
 <div class="p-5 md:px-0 w-full flex flex-row justify-center items-center h-[75vh]">
     <div class="w-full md:w-[25%] flex flex-col space-y-5">
         <div class="bg-white p-5 rounded-lg border border-black">
+            <% if (error) { %>
+                <div class="border-2 rounded-lg border-red-400 bg-red-100 p-2 mb-4">
+                    <p><%= error %></p>
+                </div>             
+            <% } %>
             <h2 class="text-2xl font-bold mb-6 text-center">Cadastre-se para comprar e vender suas mídias físicas!</h2>
-            <form action="/signin" method="POST">
+            <form action="/signup" method="POST">
                 <div class="mb-4">
-                    <label class="block text-black text-sm font-bold mb-2" for="email">
+                    <label class="block text-black text-sm font-bold mb-2" for="name">
                         Nome
                     </label>
-                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-black leading-tight focus:outline-none focus:shadow-outline" id="email" type="email" name="email" required>
+                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-black leading-tight focus:outline-none focus:shadow-outline" value="<%= nome || '' %>" id="name" type="text" name="nome" required>
                 </div>
                 <div class="mb-4">
                     <label class="block text-black text-sm font-bold mb-2" for="email">
                         Email
                     </label>
-                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-black leading-tight focus:outline-none focus:shadow-outline" id="email" type="email" name="email" required>
+                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-black leading-tight focus:outline-none focus:shadow-outline" value="<%= email || '' %>"  id="email" type="email" name="email" required>
                 </div>
                 <div class="mb-4">
                     <label class="block text-black text-sm font-bold mb-2" for="password">
                         Senha
                     </label>
-                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-black mb-3 leading-tight focus:outline-none focus:shadow-outline" id="password" type="password" name="password" required>
+                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-black mb-3 leading-tight focus:outline-none focus:shadow-outline" id="password" type="password" name="senha" required>
                 </div>
                 <div class="flex flex-col md:flex-row items-center justify-between gap-3">
                     <button type="submit" class="w-full md:w-fit px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-900 transition cursor-pointer text-center">
