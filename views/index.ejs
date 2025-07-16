@@ -1,11 +1,12 @@
 <%- include('partials/header.ejs') %>
 
+<% if (offer) { %>
 <section id="daily-offer" class="flex flex-col lg:flex-row items-center justify-evenly text-center py-10">
 	<h1 class="text-white text-2xl md:text-4xl font-bold drop-shadow-lg mb-6 lg:mb-0">Oferta Do Momento</h1>
 
 	<%- include('partials/cards/offer-card.ejs', { game: offer, applySizing: false }) %>  
 </section>
-
+<% } %>
 
 <section id="top-games" class="p-5 md:px-0 w-full flex flex-row justify-center">
 	<div class="w-full md:w-[65%]">
