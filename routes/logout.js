@@ -1,11 +1,12 @@
-var express = require('express');
+const express = require('express');
 const usersDAO = require('../database/usersDAO');
-var router = express.Router();
+const router = express.Router();
 
-router.post('/logout', (req, res) => {
+router.get('/logout', (req, res) => {
     req.session.destroy(err => {
         if (err) {
-            return res.status(500).send('Erro ao sair');
+            console.log("Erro ao sair da sessão: ", err);
+            return res.redirect('/');
         }
         res.redirect('/');
     });
