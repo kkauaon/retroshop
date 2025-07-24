@@ -78,7 +78,7 @@ Você vai precisar ter as seguintes ferramentas instaladas:
     ```
 
 3.  **Configure as Variáveis de Ambiente:**
-    Crie um arquivo chamado `.env` na raiz do projeto e adicione as seguintes variáveis. Use o arquivo `.env.example` como base.
+    Crie um arquivo chamado `.env` na raiz do projeto e adicione as seguintes variáveis. Use o exemplo abaixo como base.
 
     ```ini
     # .env
@@ -97,13 +97,13 @@ Você vai precisar ter as seguintes ferramentas instaladas:
     SESSION_SECRET=uma_chave_secreta_longa_e_aleatoria
     ```
 
-3.1. **Configurar as credenciais da API do IGDB:**
-    Para o marketplace funcionar corretamente, execute apenas uma vez no terminal este script para gerar os arquivos necessários dos consoles.
+4. **Configurar as credenciais da API do IGDB:**
+    Para o marketplace funcionar corretamente, execute apenas uma vez no terminal este script para gerar os arquivos necessários dos consoles:
     ```bash
     npm run igdb
     ```
 
-4.  **Execute a aplicação:**
+5.  **Execute a aplicação:**
     Inicie o script de compilação do Tailwind e o script de servidor:
     ```bash
     npx nodemon
@@ -113,7 +113,7 @@ Você vai precisar ter as seguintes ferramentas instaladas:
     npm run tailwind
     ```
 
-5.  Acesse `http://localhost:3000` (ou a porta que você configurar) no seu navegador.
+6.  Acesse `http://localhost:3000` (ou a porta que você configurar) no seu navegador.
 
 ---
 
