@@ -1,5 +1,5 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
 
 const IGDB = require('../../database/igdb')
 
@@ -30,6 +30,29 @@ router.get('/:consoleId/games/', async (req, res) => {
         res.render('games', { platform: console, games, hasQuery });
     } else { 
         res.render('404')
+    }
+});
+
+router.post('/:consoleId/games/', async (req, res) => {
+    const { consoleId } = req.params;
+
+    const console = platforms.platforms.find(pl => pl.slug == consoleId)
+
+    if (console) {
+        let games = [];
+
+        let hasQuery = false;
+
+        if (req.query.q) {
+            hasQuery = true;
+            games = await listingsDAO.searchGamesByPlatform(req.query.q, console.id, true)
+        } else {
+            games = await listingsDAO.mostRatedGamesByPlatform(console.id)
+        }
+
+        res.json(games)
+    } else { 
+        res.status(400).json({ error: "Houve um erro." })
     }
 });
 

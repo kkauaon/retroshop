@@ -27,17 +27,18 @@ class ListingsDAO {
      * @returns {Promise<Array<{ id: number, name: string, cover: number, coverUrl: string, price: number }>>} 
      *   A promise that resolves to an array of game objects, each containing the game ID, name, cover ID, and cover image URL.
      */
-    async searchGamesByPlatform(query, platform) {
+    async searchGamesByPlatform(query, platform, onlyIGDBData = false) {
         try {
             const platData = platforms.platforms.find(p => p.id == platform)
 
             const gamesData = await igdb.searchGamesByPlatform(query, platform)
 
-            const prices = await this.findLowestPricesForGames(gamesData.map(z => z.id), platData.slug)
+            let prices = [];
+            if (!onlyIGDBData) prices = await this.findLowestPricesForGames(gamesData.map(z => z.id), platData.slug)
 
             for (let i = 0; i < gamesData.length; i++) {
                 if (!gamesData[i].total_rating_count) gamesData[i].total_rating_count = 0
-                gamesData[i].mongo = prices.find(z => z.gameId == gamesData[i].id)
+                if (!onlyIGDBData) gamesData[i].mongo = prices.find(z => z.gameId == gamesData[i].id)
             }
 
             return gamesData.filter(z => !z.name.toLowerCase().includes("digital")).sort((a,b) => b.mongo - a.mongo).sort((a,b) => b.total_rating_count - a.total_rating_count)

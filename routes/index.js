@@ -6,6 +6,7 @@ router.use(require('./listings/games'))
 router.use(require('./signin'))
 router.use(require('./signup'))
 router.use(require('./logout'))
+router.use(require('./new'))
 
 router.get('/', async (req, res) => {
     const game = listingsDAO.getOffer();

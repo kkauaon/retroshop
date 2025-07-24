@@ -1,0 +1,245 @@
+<%- include('partials/header.ejs') %>
+
+<div class="p-5 md:px-0 w-full flex flex-row justify-center">
+    <div class="w-full md:w-[65%]">
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-black">Anunciar um Jogo 🎮</h1>
+            <p class="text-gray-600 mt-2">Comece selecionando a plataforma e depois busque pelo jogo que deseja vender.</p>
+        </div>
+
+        <form action="/new" method="POST" class="space-y-6">
+
+            <div>
+                <label class="block text-black text-sm font-bold mb-2" for="platform">
+                    1. Primeiro, selecione a plataforma
+                </label>
+                <select id="platform" name="platform" class="shadow appearance-none border rounded w-full py-2 px-3 text-black leading-tight focus:outline-none focus:shadow-outline" required>
+                    <option value="" disabled selected>Escolha uma plataforma...</option>
+
+                    <optgroup label="Nintendo">
+                        <option value="nes">Nintendinho</option>
+                        <option value="snes">Super Nintendo</option>
+                        <option value="nds">Nintendo DS</option>
+                        <option value="3ds">Nintendo 3DS</option>
+                        <option value="switch">Nintendo Switch</option>
+                        <option value="wii">Nintendo Wii</option>
+                        <option value="wiiu">Nintendo Wii U</option>
+                    </optgroup>
+
+                    <optgroup label="PlayStation">
+                        <option value="ps">PlayStation 1</option>
+                        <option value="ps2">PlayStation 2</option>
+                        <option value="ps3">PlayStation 3</option>
+                        <option value="ps4--1">PlayStation 4</option>
+                        <option value="psp">PSP</option>
+                        <option value="psvita">PS Vita</option>
+                    </optgroup>
+
+                    <optgroup label="Xbox">
+                        <option value="xbox">Xbox</option>
+                        <option value="xbox360">Xbox 360</option>
+                        <option value="xboxone">Xbox One</option>
+                    </optgroup>
+
+                    <optgroup label="Sega">
+                        <option value="sms">Master System</option>
+                        <option value="genesis-slash-megadrive">Mega Drive</option>
+                        <option value="saturn">Saturn</option>
+                        <option value="dc">Dreamcast</option>
+                    </optgroup>
+
+                    <optgroup label="Clássicos">
+                        <option value="atari2600">Atari 2600</option>
+                        <option value="gba">Game Boy Advance</option>
+                        <option value="gbc">Game Boy Color</option>
+                        <option value="gb">Game Boy</option>
+                    </optgroup>
+                </select>
+            </div>
+
+            <div class="relative"> <label class="block text-black text-sm font-bold mb-2" for="gameSearch">
+                    2. Agora, busque pelo nome do jogo
+                </label>
+                <input
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-black leading-tight focus:outline-none focus:shadow-outline disabled:bg-gray-200 disabled:cursor-not-allowed"
+                    id="gameSearch" type="text" name="gameSearch" placeholder="Selecione uma plataforma para habilitar" required
+                    disabled autocomplete="off">
+
+                <input type="hidden" id="gameId" name="gameId">
+
+                <div id="searchResultsContainer"
+                    class="hidden absolute w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg z-10 max-h-60 overflow-y-auto">
+                </div>
+            </div>
+
+            <hr class="my-4"/>
+
+            <h2 class="text-xl font-bold text-black">Detalhes do Anúncio</h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                 <div>
+                    <label class="block text-black text-sm font-bold mb-2" for="condition">
+                        Condição do Jogo
+                    </label>
+                    <select id="condition" name="condition" class="shadow appearance-none border rounded w-full py-2 px-3 text-black leading-tight focus:outline-none focus:shadow-outline" required>
+                        <option value="Lacrado">Lacrado</option>
+                        <option value="Semi-novo">Semi-novo</option>
+                        <option value="Com Marcas">Usado (Com Marcas de Uso)</option>
+                        <option value="Muito Usado">Muito Usado</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-black text-sm font-bold mb-2" for="price">
+                        Preço (R$)
+                    </label>
+                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-black leading-tight focus:outline-none focus:shadow-outline" id="price" type="number" name="price" step="0.01" placeholder="129,90" required>
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-black text-sm font-bold mb-2" for="description">
+                    Descrição (opcional)
+                </label>
+                <textarea id="description" name="description" rows="4" class="shadow appearance-none border rounded w-full py-2 px-3 text-black leading-tight focus:outline-none focus:shadow-outline" placeholder="Ex: Jogo em perfeito estado, mídia física sem riscos, acompanha todos os manuais."></textarea>
+            </div>
+
+            <div class="flex justify-end pt-4">
+                <button type="submit" class="w-full md:w-fit px-6 py-3 bg-black text-white rounded-lg hover:bg-gray-800 transition cursor-pointer text-center font-semibold">
+                    Anunciar Jogo
+                </button>
+            </div>
+
+        </form>
+        </div>
+</div>
+
+<script>
+    // --- Elementos do DOM ---
+    const platformSelect = document.getElementById('platform');
+    const gameSearchInput = document.getElementById('gameSearch');
+    const gameIdInput = document.getElementById('gameId');
+    const resultsContainer = document.getElementById('searchResultsContainer');
+
+    // --- Lógica para habilitar a busca ---
+    platformSelect.addEventListener('change', function() {
+        gameSearchInput.disabled = !this.value;
+        gameSearchInput.value = ''; // Limpa a busca ao trocar de plataforma
+        gameIdInput.value = ''; // Limpa o ID do jogo
+        resultsContainer.classList.add('hidden'); // Esconde resultados
+        gameSearchInput.placeholder = this.value ? "Digite o nome de um jogo..." : "Selecione uma plataforma para habilitar";
+        if (this.value) gameSearchInput.focus();
+    });
+
+    // --- Lógica de Busca com Debounce ---
+    let debounceTimer;
+
+    gameSearchInput.addEventListener('input', () => {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => {
+            performSearch();
+        }, 500); // Aguarda 500ms após o usuário parar de digitar
+    });
+
+    async function performSearch() {
+        const query = gameSearchInput.value.trim();
+        const consoleId = platformSelect.value;
+
+        if (query.length < 3) { // Não buscar se o texto for muito curto
+            resultsContainer.classList.add('hidden');
+            return;
+        }
+
+        // Mostra um feedback de "carregando"
+        resultsContainer.innerHTML = `<div class="p-3 text-gray-500">Buscando...</div>`;
+        resultsContainer.classList.remove('hidden');
+
+        try {
+            const response = await fetch(`/${consoleId}/games?q=${encodeURIComponent(query)}`, {
+                method: 'POST', // Conforme solicitado
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (!response.ok) throw new Error('Erro na busca');
+            
+            const games = await response.json();
+            displayResults(games);
+
+        } catch (error) {
+            console.error('Falha na busca:', error);
+            resultsContainer.innerHTML = `<div class="p-3 text-red-500">Erro ao buscar. Tente novamente.</div>`;
+        }
+    }
+
+    function displayResults(games) {
+        resultsContainer.innerHTML = ''; // Limpa resultados anteriores
+
+        if (games.length === 0) {
+            resultsContainer.innerHTML = `<div class="p-3 text-gray-500">Nenhum jogo encontrado.</div>`;
+            return;
+        }
+
+        const platform = platformSelect.value; // Pega a plataforma selecionada uma vez
+
+        games.forEach(game => {
+            // --- 1. Cria o contêiner principal para o item da lista (a linha clicável) ---
+            const item = document.createElement('div');
+            item.className = 'flex items-center p-2 hover:bg-gray-100 cursor-pointer border-b last:border-b-0';
+
+            // --- 2. Cria o contêiner para as imagens (capa + moldura) à esquerda ---
+            const imgContainer = document.createElement('div');
+            imgContainer.className = 'relative h-[120px] mr-4 flex-shrink-0'; // 'relative' para sobreposição
+
+            // --- 3. Cria a imagem da capa do jogo (camada de baixo) ---
+            const coverImg = document.createElement('img');
+            coverImg.className = 'w-full h-full object-cover z-0';
+            // Supondo que a API retorna 'coverUrl'
+            coverImg.src = game.coverUrl;
+            coverImg.onerror = function() {
+                this.onerror = null;
+                this.src = 'https://dummyimage.com/90x120/99a1af/fff.png&text=N/A';
+            };
+
+            // --- 4. Cria a imagem da moldura da plataforma (camada de cima) ---
+            /*const frameImg = document.createElement('img');
+            frameImg.className = 'absolute top-0 left-0 w-full h-full object-contain z-10 pointer-events-none select-none';
+            frameImg.src = `/covers/${platform}.png`;
+            frameImg.onerror = function() { this.style.display = 'none'; };*/
+
+            // Adiciona as imagens ao seu contêiner
+            imgContainer.appendChild(coverImg);
+            //imgContainer.appendChild(frameImg);
+
+            // --- 5. Cria o elemento para o nome do jogo à direita ---
+            const nameEl = document.createElement('h3');
+            nameEl.className = 'font-bold text-sm';
+            nameEl.textContent = game.name;
+
+            // --- 6. Monta o item da lista ---
+            item.appendChild(imgContainer);
+            item.appendChild(nameEl);
+
+            // --- 7. Adiciona o evento de clique ---
+            item.addEventListener('click', () => {
+                gameSearchInput.value = game.name;
+                gameIdInput.value = game.id;
+                resultsContainer.classList.add('hidden');
+            });
+
+            // --- 8. Adiciona o item completo ao contêiner de resultados ---
+            resultsContainer.appendChild(item);
+        });
+    }
+
+    // --- Fechar o card de resultados ao clicar fora ---
+    document.addEventListener('click', (event) => {
+        if (!gameSearchInput.contains(event.target) && !resultsContainer.contains(event.target)) {
+            resultsContainer.classList.add('hidden');
+        }
+    });
+
+</script>
+
+
+<%- include('partials/footer.ejs') %>
