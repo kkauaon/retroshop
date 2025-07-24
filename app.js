@@ -9,6 +9,7 @@ const session = require('express-session')
 const MongoStore = require('connect-mongo')
 const usersDAO = require('./database/usersDAO')
 const userSession = require('./middlewares/userSession')
+const flash = require('connect-flash');
 const client = new MongoClient(process.env.URI)
 
 listingsDAO.setClient(client)
@@ -38,6 +39,8 @@ app.use(session({
     maxAge: 1000 * 60 * 60 * 24 // 1 dia
   }
 }));
+
+app.use(flash());
 
 app.use(userSession)
 

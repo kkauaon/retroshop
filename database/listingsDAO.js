@@ -68,21 +68,58 @@ class ListingsDAO {
 
     async getGameById(gameId) {
         try {
+            // 1. Busca as informações do jogo na API da IGDB
             const igdbInfo = await igdb.getGameById(gameId);
 
-            const results = await this.db.find({
-                gameId: parseInt(gameId)
-            })
-                .sort({ price: 1 })
-                .toArray();
+            // 2. Cria a pipeline de agregação para buscar os anúncios e juntar com os dados dos vendedores
+            const pipeline = [
+                {
+                    // Filtra os anúncios para pegar apenas os do jogo específico e que estão ativos
+                    $match: {
+                        gameId: parseInt(gameId),
+                        status: 'active' 
+                    }
+                },
+                {
+                    // Ordena os resultados pelo menor preço
+                    $sort: { price: 1 }
+                },
+                {
+                    // Junta ("JOIN") com a coleção 'users'
+                    $lookup: {
+                        from: 'users',             // A coleção com a qual queremos juntar
+                        localField: 'vendorId',    // O campo da coleção 'listings'
+                        foreignField: '_id',       // O campo da coleção 'users'
+                        as: 'vendorInfo'           // O nome do novo campo (um array) que conterá os dados do vendedor
+                    }
+                },
+                {
+                    // Como $lookup cria um array, $unwind o transforma em um objeto único,
+                    // já que cada anúncio tem apenas um vendedor.
+                    $unwind: '$vendorInfo'
+                },
+                {
+                    // Remove o campo de senha do vendedor por segurança antes de enviar os dados.
+                    // Isso é MUITO IMPORTANTE.
+                    $project: {
+                        'vendorInfo.password': 0
+                    }
+                }
+            ];
 
+            // 3. Executa a agregação
+            const results = await this.db.aggregate(pipeline).toArray();
+
+            // 4. Monta o objeto final
             let data = {
                 ...igdbInfo,
-                vendors: results
-            }
+                vendors: results // 'results' agora contém a lista de anúncios, cada um com um campo 'vendorInfo'
+            };
 
+                console.log(data.vendors[0])
             return data;
         } catch (error) {
+            console.error("Error in getGameById:", error);
             throw error;
         }
     }
@@ -100,7 +137,8 @@ class ListingsDAO {
             const lowestPriceGame = await this.db.find({
                 $and: [
                     {gameId: gameId},
-                    {platform: platform}
+                    {platform: platform},
+                    {status: "active"}
                 ]
             })
                 .sort({ price: 1 })
@@ -134,6 +172,7 @@ class ListingsDAO {
                         $and: [
                            {gameId: { $in: gameIds } }, 
                            {platform: platform},
+                           {status: "active"}
                         ],
                     }
                 },
@@ -222,6 +261,7 @@ class ListingsDAO {
     async getRandomGame() {
         try {
             const randomGames = await this.db.aggregate([
+                { $match: { status: "active" } },
                 { $sample: { size: 1 } }
             ])
                 .toArray();
@@ -241,6 +281,124 @@ class ListingsDAO {
                 return null;
             }
         } catch (error) {
+            throw error;
+        }
+    }
+
+        /**
+     * Cria um novo anúncio no banco de dados.
+     * @param {object} listingData - Dados do anúncio a ser criado.
+     * @param {number} listingData.gameId - ID do jogo na IGDB.
+     * @param {string} listingData.platform - Slug da plataforma.
+     * @param {ObjectId} listingData.vendorId - ID do usuário vendedor.
+     * @param {number} listingData.price - Preço do jogo.
+     * @param {string} listingData.condition - Condição do jogo.
+     * @param {string} [listingData.description] - Descrição opcional.
+     * @returns {Promise<import('mongodb').InsertOneResult>} O resultado da operação de inserção.
+     */
+    async createListing(listingData) {
+        try {
+            const newListing = {
+                ...listingData,
+                vendorId: new ObjectId(listingData.vendorId),
+                status: "active", // Anúncios começam como ativos
+                createdAt: new Date(),
+                updatedAt: new Date(),
+            };
+            return await this.db.insertOne(newListing);
+        } catch (error) {
+            console.error("Error creating listing:", error);
+            throw error;
+        }
+    }
+
+    /**
+     * Encontra um anúncio específico pelo seu ID e anexa as informações do vendedor.
+     * @param {string} listingId - O ID do anúncio a ser encontrado.
+     * @returns {Promise<object|null>} O documento do anúncio com os dados do vendedor, ou null se não encontrado.
+     */
+    async findListingById(listingId) {
+        try {
+            const pipeline = [
+                {
+                    $match: { _id: new ObjectId(listingId) }
+                },
+                {
+                    $lookup: {
+                        from: "users",
+                        localField: "vendorId",
+                        foreignField: "_id",
+                        as: "vendorInfo"
+                    }
+                },
+                {
+                    $unwind: "$vendorInfo" // Transforma o array 'vendorInfo' em um objeto
+                },
+                {
+                    $project: { // Remove campos sensíveis do vendedor
+                        "vendorInfo.password": 0
+                    }
+                }
+            ];
+            const result = await this.db.aggregate(pipeline).toArray();
+            return result.length > 0 ? result[0] : null;
+        } catch (error) {
+            console.error("Error finding listing by ID:", error);
+            throw error;
+        }
+    }
+
+    /**
+     * Encontra todos os anúncios de um vendedor específico.
+     * @param {string} vendorId - O ID do usuário vendedor.
+     * @returns {Promise<Array<object>>} Uma lista dos anúncios do vendedor.
+     */
+    async findListingsByVendor(vendorId) {
+        try {
+            return await this.db.find({ vendorId: new ObjectId(vendorId) })
+                .sort({ createdAt: -1 })
+                .toArray();
+        } catch (error) {
+            console.error("Error finding listings by vendor:", error);
+            throw error;
+        }
+    }
+
+    /**
+     * Atualiza os dados de um anúncio, verificando a propriedade.
+     * @param {string} listingId - O ID do anúncio a ser atualizado.
+     * @param {string} vendorId - O ID do vendedor (para segurança).
+     * @param {object} updateData - Os campos a serem atualizados (ex: { price, description }).
+     * @returns {Promise<import('mongodb').UpdateResult>} O resultado da operação de atualização.
+     */
+    async updateListing(listingId, vendorId, updateData) {
+        try {
+            // Garante que o updatedAt seja sempre atualizado
+            const dataToSet = { ...updateData, updatedAt: new Date() };
+
+            return await this.db.updateOne(
+                { _id: new ObjectId(listingId), vendorId: new ObjectId(vendorId) },
+                { $set: dataToSet }
+            );
+        } catch (error) {
+            console.error("Error updating listing:", error);
+            throw error;
+        }
+    }
+
+    /**
+     * Exclui um anúncio, verificando a propriedade.
+     * @param {string} listingId - O ID do anúncio a ser excluído.
+     * @param {string} vendorId - O ID do vendedor (para segurança).
+     * @returns {Promise<import('mongodb').DeleteResult>} O resultado da operação de exclusão.
+     */
+    async deleteListing(listingId, vendorId) {
+        try {
+            return await this.db.deleteOne(
+                { _id: new ObjectId(listingId), vendorId: new ObjectId(vendorId) }
+            );
+        } catch (error) {
+            console.error("Error deleting listing:", error);
             throw error;
         }
     }

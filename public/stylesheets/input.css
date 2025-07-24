@@ -62,7 +62,7 @@
         width: calc(((100% - 20px) / 2));
     }
 
-    .trending-games .game-card:nth-last-child(1) {
+    .trending-games .game-card:nth-child(5) {
         display: none;
     }
 }

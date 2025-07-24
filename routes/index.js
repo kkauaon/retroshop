@@ -3,10 +3,12 @@ const listingsDAO = require('../database/listingsDAO');
 const router = express.Router();
 
 router.use(require('./listings/games'))
+router.use(require('./listings/dash'))
 router.use(require('./signin'))
 router.use(require('./signup'))
 router.use(require('./logout'))
 router.use(require('./new'))
+router.use(require('./profile'))
 
 router.get('/', async (req, res) => {
     const game = listingsDAO.getOffer();
